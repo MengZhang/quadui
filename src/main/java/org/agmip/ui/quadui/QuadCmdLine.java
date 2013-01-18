@@ -46,7 +46,7 @@ public class QuadCmdLine {
             printHelp();
             return;
         } else {
-            debug();
+            argsInfo();
         }
 
         LOG.info("Starting translation job");
@@ -73,15 +73,21 @@ public class QuadCmdLine {
                 pathNum = 4;
             } else if (args[i].equalsIgnoreCase("-h") || args[i].equalsIgnoreCase("-help")) {
                 helpFlg = true;
+            } else if (args[i].equalsIgnoreCase("-dssat")) {
+                addModel(Model.DSSAT.toString());
+            } else if (args[i].equalsIgnoreCase("-apsim")) {
+                addModel(Model.APSIM.toString());
+            } else if (args[i].equalsIgnoreCase("-json")) {
+                addModel(Model.JSON.toString());
             } else {
-                if (args[i].contains("d")) {
-                    models.add(Model.DSSAT.toString());
+                if (args[i].contains("D")) {
+                    addModel(Model.DSSAT.toString());
                 }
-                if (args[i].contains("a")) {
-                    models.add(Model.APSIM.toString());
+                if (args[i].contains("A")) {
+                    addModel(Model.APSIM.toString());
                 }
-                if (args[i].contains("j")) {
-                    models.add(Model.JSON.toString());
+                if (args[i].contains("J")) {
+                    addModel(Model.JSON.toString());
                 }
             }
             i++;
@@ -108,6 +114,12 @@ public class QuadCmdLine {
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             LOG.error("Path arguments are not enough for selected dome mode");
+        }
+    }
+    
+    private void addModel(String model) {
+        if (models.indexOf(model) < 0) {
+            models.add(model);
         }
     }
 
@@ -298,10 +310,10 @@ public class QuadCmdLine {
             System.out.println("\t\t-f | -filed\tField Overlay, will require Field Overlay File");
             System.out.println("\t\t-s | -strategy\tSeasonal Strategy, will require both Field Overlay and Strategy File");
             System.out.println("\t<model_option>");
-            System.out.println("\t\t-d\t\tDSSAT");
-            System.out.println("\t\t-a\t\tAPSIM");
-            System.out.println("\t\t-j\t\tJSON");
-            System.out.println("\t\t* Could be combined input like -daj or -dj");
+            System.out.println("\t\t-D | -dssat\tDSSAT");
+            System.out.println("\t\t-A | -apsim\tAPSIM");
+            System.out.println("\t\t-J | -json\tJSON");
+            System.out.println("\t\t* Could be combined input like -DAJ or -DJ");
             System.out.println("\t<convert_path>");
             System.out.println("\t\tThe path for file to be converted");
             System.out.println("\t<field_path>");
@@ -317,13 +329,13 @@ public class QuadCmdLine {
         }
     }
 
-    private void debug() {
-        LOG.debug("Dome mode:\t" + mode);
-        LOG.debug("convertPath:\t" + convertPath);
-        LOG.debug("fieldPath:\t" + fieldPath);
-        LOG.debug("strategyPath:\t" + strategyPath);
-        LOG.debug("outputPath:\t" + outputPath);
-        LOG.debug("Models:\t\t" + models);
+    private void argsInfo() {
+        LOG.info("Dome mode:\t" + mode);
+        LOG.info("convertPath:\t" + convertPath);
+        LOG.info("fieldPath: \t" + fieldPath);
+        LOG.info("strategyPath:\t" + strategyPath);
+        LOG.info("outputPath:\t" + outputPath);
+        LOG.info("Models:\t\t" + models);
     }
 
     private static String getStackTrace(Throwable aThrowable) {
